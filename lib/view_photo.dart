@@ -7,7 +7,12 @@ class ViewPhotos extends StatefulWidget {
   final String heroTitle;
   final imageIndex;
   final List<dynamic> imageList;
-  ViewPhotos({this.imageIndex, this.imageList, this.heroTitle = "img"});
+  final Color textColor;
+  ViewPhotos(
+      {this.imageIndex,
+      this.imageList,
+      this.heroTitle = "img",
+      this.textColor = Colors.grey});
 
   @override
   _ViewPhotosState createState() => _ViewPhotosState();
@@ -33,55 +38,52 @@ class _ViewPhotosState extends State<ViewPhotos> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        title: Text(
-          "${currentIndex + 1} out of ${widget.imageList.length}",
-          style: TextStyle(color: Colors.white),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.clear,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          )
-        ],
-        centerTitle: true,
-        leading: Container(),
-        backgroundColor: Colors.black,
-      ),
       body: Container(
-          child: Stack(
-        children: [
-          PhotoViewGallery.builder(
-            scrollPhysics: const BouncingScrollPhysics(),
-            pageController: pageController,
-            builder: (BuildContext context, int index) {
-              return PhotoViewGalleryPageOptions(
-                imageProvider: NetworkImage(widget.imageList[index]),
-                heroAttributes:
-                    PhotoViewHeroAttributes(tag: "photo${widget.imageIndex}"),
-              );
-            },
-            onPageChanged: onPageChanged,
-            itemCount: widget.imageList.length,
-            loadingBuilder: (context, progress) => Center(
-              child: Container(
-                width: 60.0,
-                height: 60.0,
-                child: (progress == null || progress.cumulativeBytesLoaded == null || progress.expectedTotalBytes == null)?CircularProgressIndicator():CircularProgressIndicator(
-                  value: progress.cumulativeBytesLoaded /
-                      progress.expectedTotalBytes,
+        child: Stack(
+          children: [
+            PhotoViewGallery.builder(
+              scrollPhysics: const BouncingScrollPhysics(),
+              pageController: pageController,
+              builder: (BuildContext context, int index) {
+                return PhotoViewGalleryPageOptions(
+                  imageProvider: NetworkImage(widget.imageList[index]),
+                  heroAttributes:
+                      PhotoViewHeroAttributes(tag: "photo${widget.imageIndex}"),
+                );
+              },
+              onPageChanged: onPageChanged,
+              itemCount: widget.imageList.length,
+              loadingBuilder: (context, progress) => Center(
+                child: Container(
+                  child: (progress == null ||
+                          progress.cumulativeBytesLoaded == null ||
+                          progress.expectedTotalBytes == null)
+                      ? CircularProgressIndicator()
+                      : CircularProgressIndicator(
+                          value: progress.cumulativeBytesLoaded /
+                              progress.expectedTotalBytes,
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(widget.textColor),
+                        ),
                 ),
               ),
             ),
-          ),
-        ],
-      )),
+          ],
+        ),
+      ),
+      bottomSheet: Container(
+        color: Colors.black,
+        height: 30,
+        alignment: Alignment.bottomRight,
+        width: MediaQuery.of(context).size.width,
+        child: Text(
+          "${currentIndex + 1} / ${widget.imageList.length}",
+          style: TextStyle(
+              color: widget.textColor,
+              fontSize: 12,
+              fontWeight: FontWeight.normal),
+        ),
+      ),
     );
   }
 }
