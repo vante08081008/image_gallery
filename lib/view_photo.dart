@@ -58,7 +58,10 @@ class _ViewPhotosState extends State<ViewPhotos> {
                   child: (progress == null ||
                           progress.cumulativeBytesLoaded == null ||
                           progress.expectedTotalBytes == null)
-                      ? CircularProgressIndicator()
+                      ? CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(widget.textColor),
+                        )
                       : CircularProgressIndicator(
                           value: progress.cumulativeBytesLoaded /
                               progress.expectedTotalBytes,
@@ -74,7 +77,7 @@ class _ViewPhotosState extends State<ViewPhotos> {
       bottomSheet: Container(
         color: Colors.black,
         height: 30,
-        alignment: Alignment.bottomRight,
+        alignment: Alignment.topRight,
         width: MediaQuery.of(context).size.width,
         child: Text(
           "${currentIndex + 1} / ${widget.imageList.length}",
